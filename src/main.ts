@@ -117,14 +117,12 @@ async function main() {
             await syncHistoricalV3Pool(address, web3utils, sqliteHelper, beginBlockNumber, endBlock);
         }*/
         console.log("Sync Balancer Pool")
-        await syncHistoricalBalancerPool(balancer_vault_address, web3utils, sqliteHelper, 15196074, endBlock)
+        await syncHistoricalBalancerPool(balancer_vault_address, web3utils, sqliteHelper, balancer_vault_deployedBlock, endBlock)
         const endTime = performance.now();
         const totalTime = endTime - startTime;
         console.log(`Total synchronization time: ${totalTime} milliseconds`);
         console.log('Graph Historyical Sync Finished');
     }
-
-
 }
 
 main()

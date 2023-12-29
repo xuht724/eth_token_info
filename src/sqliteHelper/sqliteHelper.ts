@@ -180,7 +180,7 @@ export class SqliteHelper {
     public addBalancerEdge(edge: balancerEdge): void {
         const tag = this.calculateTag(edge.blockTimestampLast!);
         const query = 'INSERT INTO BalancerEdge (address, protocolName, poolType, pairId, tokens, blockTimeLast, tag) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        const params = [edge.pairAddress.toLowerCase(), edge.protocolName, edge.poolType, edge.pairId.toLowerCase(), edge.tokens, edge.blockTimestampLast, tag];
+        const params = [edge.pairAddress.toLowerCase(), edge.protocolName, edge.poolType, edge.pairId.toLowerCase(), edge.tokens.toString(), edge.blockTimestampLast, tag];
 
         this.db.run(query, params, (err) => {
             if (err) {

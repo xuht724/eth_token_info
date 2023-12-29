@@ -124,7 +124,7 @@ export async function syncHistoricalBalancerPool(
 ) {
     let VaultContract = new web3Utils.myWeb3.eth.Contract(balancerVault_abi, balancer_vault_address);
 
-    const blockInterval = 2000;
+    const blockInterval = 1000;
     let currentBlock = startBlock;
     while (currentBlock < endBlock) {
         try {
