@@ -5,13 +5,14 @@ import { ProtocolName, BalancerPool } from "./types";
 // wss://mainnet.infura.io/ws/v3/d562ab8be7824445a11dc8c7575552cd
 // wss://eth-mainnet.g.alchemy.com/v2/AmGhouGifK4fNQtvtdZI_wQX1pdgHxQo
 // wss://eth-mainnet.nodereal.io/ws/v1/abf58db7a57847518733df4dd817bbbc
+// https://eth-mainnet.g.alchemy.com/v2/uyj_tyHLceTqOwOWoDyYFFOuoO6UVdV5
+// wss://eth-mainnet.g.alchemy.com/v2/uyj_tyHLceTqOwOWoDyYFFOuoO6UVdV5
 //export const ERIGON_URL = "http://127.0.0.1:8547";
 //export const GETH_URL = "http://127.0.0.1:8545";
 //export const WS_GETH_URL = "ws://127.0.0.1:8546";
 export const ERIGON_URL = "wss://mainnet.infura.io/ws/v3/d562ab8be7824445a11dc8c7575552cd";
 export const GETH_URL = "https://eth-mainnet.g.alchemy.com/v2/AmGhouGifK4fNQtvtdZI_wQX1pdgHxQo";
 export const WS_GETH_URL = "wss://eth-mainnet.g.alchemy.com/v2/AmGhouGifK4fNQtvtdZI_wQX1pdgHxQo";
-
 
 export const sqlite_database = 'D:\\Program\\sqlite\\eth_token_graph\\data.db'
 
@@ -67,6 +68,7 @@ export const balancer_factory_address_map: { [key: string]: string } = {
     "stable_v1_factory": "0xc66Ba2B6595D3613CCab350C886aCE23866EDe24",
 
     "meta_stable_factory": "0x67d27634E44793fE63c467035E31ea8635117cd4",
+    "meta_stable_factory_with_oracle": "0x469b58680774AAc9Ad66447eFB4EF634756A2cC5",
 
     "stable_phantom_factory": "0xb08E16cFc07C684dAA2f93C70323BAdb2A6CBFd2",
 
@@ -184,19 +186,23 @@ export const balancer_factory_deployedBlock_map: { [key: string]: any } = {
     },
 
     "0x8df6EfEc5547e31B0eb7d1291B511FF8a2bf987c": {
-        type: BalancerPool.StablePool,
+        type: BalancerPool.ComposableStablePool,
         beginBlockNumber: 14934936
     },
     "0xc66Ba2B6595D3613CCab350C886aCE23866EDe24": {
-        type: BalancerPool.StablePool,
+        type: BalancerPool.ComposableStablePool,
         beginBlockNumber: 12703127
     },
     "0x67d27634E44793fE63c467035E31ea8635117cd4": {
-        type: BalancerPool.StablePool,
+        type: BalancerPool.ComposableStablePool,
         beginBlockNumber: 13011941
     },
+    "0x469b58680774AAc9Ad66447eFB4EF634756A2cC5":{
+        type: BalancerPool.ComposableStablePool,
+        beginBlockNumber: 13011930
+    },
     "0xb08E16cFc07C684dAA2f93C70323BAdb2A6CBFd2": {
-        type: BalancerPool.StablePool,
+        type: BalancerPool.ComposableStablePool,
         beginBlockNumber: 13766527
     },
 
@@ -231,7 +237,7 @@ export const balancer_factory_deployedBlock_map: { [key: string]: any } = {
     },
 
     "0x48767F9F868a4A7b86A90736632F6E44C2df7fa9": {
-        type: BalancerPool.InvestmentPool,
+        type: BalancerPool.ManagedPool,
         beginBlockNumber: 13279079
     },
 }

@@ -25,11 +25,9 @@ export enum ProtocolName {
 export enum BalancerPool {
     WeightedPool = 'weighted',
     ComposableStablePool = 'csp',
-    StablePool = 'stable',
     BoostedPool = 'boosted',
     LiquidityBootstrappingPool = 'lbp',
     LinearPool = 'linear',
     ManagedPool = 'managed',
-    InvestmentPool = 'investment',
     Unknown = 'unknown'
 }

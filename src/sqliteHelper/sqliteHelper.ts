@@ -345,9 +345,17 @@ export class SqliteHelper {
         const query = 'SELECT pairId FROM BalancerEdge WHERE tag >= ?';
         try {
             const rows = await this.runQuery(query, [minTag]);
-            // console.log(rows);
-
             return rows.map((row: any) => row.pairId);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async getBalancerUnknownEdgeAddresses(minTag: number = 0): Promise<string[]> {
+        const query = 'SELECT address FROM BalancerEdge WHERE tag >= ? and poolType == ?';
+        try {
+            const rows = await this.runQuery(query, [minTag, "unknown"]);
+            return rows.map((row: any) => row.address);
         } catch (error) {
             throw error;
         }
@@ -356,13 +364,12 @@ export class SqliteHelper {
     public async getBalancerPoolType(minTag: number = 0): Promise<Map<string, number>> {
         const query = 'SELECT address FROM BalancerEdge WHERE tag >= ? and poolType == ?';
         let res = new Map()
-        const pooltypes = ["weighted", "csp", "stable", "boosted", "lbp", "linear", "managed", "investment", "unknown"]
+        const pooltypes = ["weighted", "csp", "lbp", "linear", "managed", "unknown"]
         try {
             for(let t in pooltypes){
                 let rows = await this.runQuery(query, [minTag, pooltypes[t]]);
                 res.set(pooltypes[t], rows.length)
             }
-            
             return res
         } catch (error) {
             throw error;

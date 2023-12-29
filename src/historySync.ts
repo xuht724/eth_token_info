@@ -124,7 +124,7 @@ export async function syncHistoricalBalancerPool(
 ) {
     let VaultContract = new web3Utils.myWeb3.eth.Contract(balancerVault_abi, balancer_vault_address);
 
-    const blockInterval = 1000;
+    const blockInterval = 10000;
     let currentBlock = startBlock;
     while (currentBlock < endBlock) {
         try {
@@ -149,11 +149,11 @@ export async function syncHistoricalBalancerPool(
             currentBlock = toBlock + 1;
 
             // Add a delay to avoid overloading the node and API
-            await sleep(5000); // 1 second delay
+            await sleep(1000); // 1 second delay
         } catch (error) {
             console.log(error);
             console.log(`Sync balancer fail`);
-            await sleep(10000); // 5 seconds delay before retrying
+            await sleep(5000); // 5 seconds delay before retrying
         }
     }
 }
