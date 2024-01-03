@@ -1,0 +1,28 @@
+{
+  "name": "token_graph",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.3.2"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "ethcall": "^6.0.2",
+    "ethereum-multicall": "^2.21.0",
+    "ethers": "^6.9.0",
+    "lru-cache": "^10.1.0",
+    "neo4j-driver": "^5.15.0",
+    "sqlite3": "^5.1.6",
+    "ts-node": "^10.9.1",
+    "viem": "^1.21.4",
+    "web3": "^4.2.2",
+    "winston": "^3.11.0"
+  }
+}
