@@ -5,9 +5,12 @@ import {
     ProtocolName,
     PoolType,
     Token,
+    DEX_EXCHANGE,
+    CreatedMethod,
     UniswapV2LikePoolDocument
 } from "../types"
 import { uniV2PoolABI, uniV3PoolABI, balancerVaultABI, erc20ABI } from "../abi"
+import { getExchangeAndPoolType } from "../utils";
 
 
 export class ChainStateHelper {
@@ -23,6 +26,15 @@ export class ChainStateHelper {
         })
     }
 
+    public addTokenInfo(address: Address, token: Token) {
+        if (this.tokenInfoMap.has(address)) {
+            return 
+        } else {
+            this.tokenInfoMap.set(address, token)
+        }
+    }
+
+    //address: V2 Pool Address
     public async getV2PoolInfo(address: Address, protocol: ProtocolName): Promise<UniswapV2LikePoolDocument | undefined> {
         try {
             const v2PoolContract = getContract({
@@ -47,19 +59,21 @@ export class ChainStateHelper {
             }
             let token0Address = getAddress(infoList[0].result as string);
             let token1Address = getAddress(infoList[1].result as string);
-            let token0 = this.getToken(token0Address);
-            let token1 = this.getToken(token0Address);
+            let token0 = await this.getToken(token0Address);
+            let token1 = await this.getToken(token1Address);
             if (!token0 || !token1) {
                 throw new Error('Fail to get pool info');
             }
+
+            let { exchange, poolType } = getExchangeAndPoolType(protocol);
 
             let document: UniswapV2LikePoolDocument = {
                 poolAddress: address,
                 token0: token0,
                 token1: token1,
                 createdMethod: CreatedMethod.FACTORY,
-                dexExchange: DEX_EXCHANGE,
-                poolType: PoolType.UNISWAP_V2_LIKE_POOL,
+                dexExchange: exchange,
+                poolType: poolType,
                 protocolName: protocol,
                 documentType: DocumentType.POOL
             }
@@ -69,7 +83,7 @@ export class ChainStateHelper {
         }
     }
 
-    public getToken(address: Address): Token | undefined {
+    public async getToken(address: Address): Promise<Token | undefined> {
         let token = this.tokenInfoMap.get(address)
         if (token) {
             return token

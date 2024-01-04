@@ -65,7 +65,7 @@ export type UniswapV3LikePoolDocument = {
     swapFee: bigint
     createdMethod: CreatedMethod.FACTORY
     dexExchange: DEX_EXCHANGE
-    poolType: PoolType.UNISWAP_V3_LIKE_POOL
+    poolType: PoolType
     protocolName: ProtocolName
 } & BaseDocument
 
@@ -75,7 +75,7 @@ export type UniswapV2LikePoolDocument = {
     token1: Token
     createdMethod: CreatedMethod.FACTORY
     dexExchange: DEX_EXCHANGE
-    poolType: PoolType.UNISWAP_V2_LIKE_POOL
+    poolType: PoolType
     protocolName: ProtocolName
 } & BaseDocument
 
@@ -83,12 +83,12 @@ export type BalancerWeightedPoolDocument = {
     poolAddress: string
     poolId: string
     createdMethod: CreatedMethod.FACTORY
-    dexExchange: DEX_EXCHANGE.BALANCER
+    dexExchange: DEX_EXCHANGE
     protocolName: ProtocolName
 } & BaseDocument
 
 export type CurvePoolDocument = {
     poolAddress: string
-    dexExchange: DEX_EXCHANGE.CURVE
+    dexExchange: DEX_EXCHANGE
     ProtocolName: ProtocolName
 } & BaseDocument
