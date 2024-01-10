@@ -1,0 +1,2 @@
+export const _2_POW_96 = 79228162514264337593543950336n;
+export const customMaxInteger = 18446744073709551616n;
