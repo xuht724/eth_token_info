@@ -1,18 +1,18 @@
 import { Web3, HttpProvider, TransactionReceipt } from "web3";
 import axios from "axios";
-import { erc20_abi } from "../abi/erc20";
-import { ProtocolName, TokenInfo, protocol, v2Edge } from "../types";
+import { erc20_abi } from "../../abi/erc20";
+import { ProtocolName, Token, protocol, v2Edge } from "../../types";
 import { LRUCache } from "lru-cache";
-import { univ2Pool_abi } from "../abi/pool/univ2pool";
+import { univ2Pool_abi } from "../../abi/pool/univ2pool";
 import winston from "winston";
 
-import { web3Logger } from "../logger";
+import { web3Logger } from "../../logger";
 
 export class Web3Utils {
     myWeb3: Web3;
     node_url: string;
     Logger: winston.Logger;
-    private tokenInfoCache = new LRUCache<string, TokenInfo>({ max: 1000 });
+    private tokenInfoCache = new LRUCache<string, Token>({ max: 1000 });
 
     constructor(node_url: string) {
         this.node_url = node_url;
@@ -87,7 +87,7 @@ export class Web3Utils {
         }
     }
 
-    public async getTokenInfo(address: string): Promise<TokenInfo | null> {
+    public async getTokenInfo(address: string): Promise<Token | null> {
         // check if in cache
         const cachedTokenInfo = this.tokenInfoCache.get(address);
         if (cachedTokenInfo) {
@@ -101,7 +101,7 @@ export class Web3Utils {
         return null;
     }
 
-    private async fetchTokenInfo(address: string): Promise<TokenInfo | null> {
+    private async fetchTokenInfo(address: string): Promise<Token | null> {
         let tokenContract = new this.myWeb3.eth.Contract(erc20_abi, address);
         let name = "";
         let symbol = "";
@@ -128,6 +128,6 @@ export class Web3Utils {
             name,
             symbol,
             decimals,
-        } as TokenInfo;
+        } as Token;
     }
 }

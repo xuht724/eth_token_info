@@ -1,7 +1,7 @@
-import { ETHTVLCaculator } from "../tvlCaculator";
+import { ETHTVLCaculator } from "./tvlCaculator";
 import { HTTP_NODE_URL, sqlite_database } from "../config";
-import { MulticallHelper } from "../multicallHelper";
-import { SqliteHelper, TableName } from "../sqliteHelper";
+import { MulticallHelper } from "../toolHelpers/multicallHelper";
+import { SqliteHelper, TableName } from "../toolHelpers/sqliteHelper";
 import { WETH } from "../constants/tokenAddress";
 
 const MINTAG = 0;

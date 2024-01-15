@@ -1,8 +1,8 @@
 import { ETHTVLCaculator } from "./tvlCaculator";
-import { MulticallHelper } from "../multicallHelper";
-import { HTTP_NODE_URL } from "../config";
-import { Basic2AssetEdge } from "../types/edgs";
-import { ProtocolName } from "../types";
+import { MulticallHelper } from "../../toolHelpers/multicallHelper";
+import { HTTP_NODE_URL } from "../../config";
+import { Basic2AssetEdge } from "../../types/sqliteEdges";
+import { ProtocolName } from "../../types";
 import { formatEther } from "viem";
 
 async function main() {

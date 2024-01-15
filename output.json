@@ -1,0 +1,416 @@
+{
+  "0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7": {
+    "protocolName": "curve",
+    "poolAddress": "0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+        "decimals": 18,
+        "name": "Dai Stablecoin",
+        "symbol": "Dai Stablecoin"
+      },
+      {
+        "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "decimals": 6,
+        "name": "USD Coin",
+        "symbol": "USD Coin"
+      },
+      {
+        "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+        "decimals": 6,
+        "name": "Tether USD",
+        "symbol": "Tether USD"
+      }
+    ],
+    "A": "2000",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0xdc24316b9ae028f1497c275eb9192a3ea0f67022": {
+    "protocolName": "curve",
+    "poolAddress": "0xdc24316b9ae028f1497c275eb9192a3ea0f67022",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+        "decimals": 18,
+        "name": "ETH",
+        "symbol": "ETH"
+      },
+      {
+        "address": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+        "decimals": 18,
+        "name": "Liquid staked Ether 2.0",
+        "symbol": "Liquid staked Ether 2.0"
+      }
+    ],
+    "A": "30",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0x390f3595bca2df7d23783dfd126427cceb997bf4": {
+    "protocolName": "curve",
+    "poolAddress": "0x390f3595bca2df7d23783dfd126427cceb997bf4",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+        "decimals": 6,
+        "name": "Tether USD",
+        "symbol": "Tether USD"
+      },
+      {
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
+        "name": "Curve.Fi USD Stablecoin",
+        "symbol": "Curve.Fi USD Stablecoin"
+      }
+    ],
+    "A": "500",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0x4dece678ceceb27446b35c672dc7d61f30bad69e": {
+    "protocolName": "curve",
+    "poolAddress": "0x4dece678ceceb27446b35c672dc7d61f30bad69e",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "decimals": 6,
+        "name": "USD Coin",
+        "symbol": "USD Coin"
+      },
+      {
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
+        "name": "Curve.Fi USD Stablecoin",
+        "symbol": "Curve.Fi USD Stablecoin"
+      }
+    ],
+    "A": "500",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0xc5424b857f758e906013f3555dad202e4bdb4567": {
+    "protocolName": "curve",
+    "poolAddress": "0xc5424b857f758e906013f3555dad202e4bdb4567",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+        "decimals": 18,
+        "name": "ETH",
+        "symbol": "ETH"
+      },
+      {
+        "address": "0x5e74c9036fb86bd7ecdcb084a0673efc32ea31cb",
+        "decimals": 18,
+        "name": "Synth sETH",
+        "symbol": "Synth sETH"
+      }
+    ],
+    "A": "256",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0xf980b4a4194694913af231de69ab4593f5e0fcdc": {
+    "protocolName": "curve",
+    "poolAddress": "0xf980b4a4194694913af231de69ab4593f5e0fcdc",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0x4591dbff62656e7859afe5e45f6f47d3669fbb28",
+        "decimals": 18,
+        "name": "Prisma mkUSD",
+        "symbol": "Prisma mkUSD"
+      },
+      {
+        "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "decimals": 6,
+        "name": "USD Coin",
+        "symbol": "USD Coin"
+      }
+    ],
+    "A": "150",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0xed279fdd11ca84beef15af5d39bb4d4bee23f0ca": {
+    "protocolName": "curve",
+    "poolAddress": "0xed279fdd11ca84beef15af5d39bb4d4bee23f0ca",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0x5f98805a4e8be255a32880fdec7f6728c6568ba0",
+        "decimals": 18,
+        "name": "LUSD Stablecoin",
+        "symbol": "LUSD Stablecoin"
+      },
+      {
+        "address": "0x6c3f90f043a72fa612cbac8115ee7e52bde6e490",
+        "decimals": 18,
+        "name": "Curve.fi DAI/USDC/USDT",
+        "symbol": "Curve.fi DAI/USDC/USDT"
+      }
+    ],
+    "A": "500",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0xa1f8a6807c402e4a15ef4eba36528a3fed24e577": {
+    "protocolName": "curve",
+    "poolAddress": "0xa1f8a6807c402e4a15ef4eba36528a3fed24e577",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+        "decimals": 18,
+        "name": "ETH",
+        "symbol": "ETH"
+      },
+      {
+        "address": "0x5e8422345238f34275888049021821e8e08caa1f",
+        "decimals": 18,
+        "name": "Frax Ether",
+        "symbol": "Frax Ether"
+      }
+    ],
+    "A": "1200",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0x0cfe5c777a7438c9dd8add53ed671cec7a5faee5": {
+    "protocolName": "curve",
+    "poolAddress": "0x0cfe5c777a7438c9dd8add53ed671cec7a5faee5",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0x4591dbff62656e7859afe5e45f6f47d3669fbb28",
+        "decimals": 18,
+        "name": "Prisma mkUSD",
+        "symbol": "Prisma mkUSD"
+      },
+      {
+        "address": "0x3175df0976dfa876431c2e9ee6bc45b65d3473cc",
+        "decimals": 18,
+        "name": "Curve.fi FRAX/USDC",
+        "symbol": "Curve.fi FRAX/USDC"
+      }
+    ],
+    "A": "200",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0x3de254a0f838a844f727fee81040e0fa7884b935": {
+    "protocolName": "curve",
+    "poolAddress": "0x3de254a0f838a844f727fee81040e0fa7884b935",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0x4591dbff62656e7859afe5e45f6f47d3669fbb28",
+        "decimals": 18,
+        "name": "Prisma mkUSD",
+        "symbol": "Prisma mkUSD"
+      },
+      {
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
+        "name": "Curve.Fi USD Stablecoin",
+        "symbol": "Curve.Fi USD Stablecoin"
+      }
+    ],
+    "A": "100",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0x94cc50e4521bd271c1a997a3a4dc815c2f920b41": {
+    "protocolName": "curve",
+    "poolAddress": "0x94cc50e4521bd271c1a997a3a4dc815c2f920b41",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0x57ab1ec28d129707052df4df418d58a2d46d5f51",
+        "decimals": 18,
+        "name": "Synth sUSD",
+        "symbol": "Synth sUSD"
+      },
+      {
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
+        "name": "Curve.Fi USD Stablecoin",
+        "symbol": "Curve.Fi USD Stablecoin"
+      }
+    ],
+    "A": "500",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0x9c3b46c0ceb5b9e304fcd6d88fc50f7dd24b31bc": {
+    "protocolName": "curve",
+    "poolAddress": "0x9c3b46c0ceb5b9e304fcd6d88fc50f7dd24b31bc",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "decimals": 18,
+        "name": "Wrapped Ether",
+        "symbol": "Wrapped Ether"
+      },
+      {
+        "address": "0x5e8422345238f34275888049021821e8e08caa1f",
+        "decimals": 18,
+        "name": "Frax Ether",
+        "symbol": "Frax Ether"
+      }
+    ],
+    "A": "1000",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0xdcef968d416a41cdac0ed8702fac8128a64241a2": {
+    "protocolName": "curve",
+    "poolAddress": "0xdcef968d416a41cdac0ed8702fac8128a64241a2",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0x853d955acef822db058eb8505911ed77f175b99e",
+        "decimals": 18,
+        "name": "Frax",
+        "symbol": "Frax"
+      },
+      {
+        "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "decimals": 6,
+        "name": "USD Coin",
+        "symbol": "USD Coin"
+      }
+    ],
+    "A": "1500",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0x2673099769201c08e9a5e63b25fbaf25541a6557": {
+    "protocolName": "curve",
+    "poolAddress": "0x2673099769201c08e9a5e63b25fbaf25541a6557",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0xdf3ac4f479375802a821f7b7b46cd7eb5e4262cc",
+        "decimals": 18,
+        "name": "eUSD",
+        "symbol": "eUSD"
+      },
+      {
+        "address": "0x6c3f90f043a72fa612cbac8115ee7e52bde6e490",
+        "decimals": 18,
+        "name": "Curve.fi DAI/USDC/USDT",
+        "symbol": "Curve.fi DAI/USDC/USDT"
+      }
+    ],
+    "A": "50",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0xb7ecb2aa52aa64a717180e030241bc75cd946726": {
+    "protocolName": "curve",
+    "poolAddress": "0xb7ecb2aa52aa64a717180e030241bc75cd946726",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+        "decimals": 8,
+        "name": "Wrapped BTC",
+        "symbol": "Wrapped BTC"
+      },
+      {
+        "address": "0x18084fba666a33d37592fa2633fd49a74dd93a88",
+        "decimals": 18,
+        "name": "tBTC v2",
+        "symbol": "tBTC v2"
+      }
+    ],
+    "A": "300",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0x21e27a5e5513d6e65c4f830167390997aa84843a": {
+    "protocolName": "curve",
+    "poolAddress": "0x21e27a5e5513d6e65c4f830167390997aa84843a",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+        "decimals": 18,
+        "name": "ETH",
+        "symbol": "ETH"
+      },
+      {
+        "address": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+        "decimals": 18,
+        "name": "Liquid staked Ether 2.0",
+        "symbol": "Liquid staked Ether 2.0"
+      }
+    ],
+    "A": "1500",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  },
+  "0xaeda92e6a3b1028edc139a4ae56ec881f3064d4f": {
+    "protocolName": "curve",
+    "poolAddress": "0xaeda92e6a3b1028edc139a4ae56ec881f3064d4f",
+    "poolType": "curve_stable_swap_pool",
+    "coins": [
+      {
+        "address": "0xa0d69e286b938e21cbf7e51d71f6a4c8918f482f",
+        "decimals": 18,
+        "name": "Electronic Dollar",
+        "symbol": "Electronic Dollar"
+      },
+      {
+        "address": "0x3175df0976dfa876431c2e9ee6bc45b65d3473cc",
+        "decimals": 18,
+        "name": "Curve.fi FRAX/USDC",
+        "symbol": "Curve.fi FRAX/USDC"
+      }
+    ],
+    "A": "200",
+    "rates": [],
+    "swapFee": "0",
+    "swapFeeMultiplier": null,
+    "adminFee": "0"
+  }
+}

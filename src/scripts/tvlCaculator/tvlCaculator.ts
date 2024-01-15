@@ -1,13 +1,13 @@
 import { getContract, getAddress, formatEther, parseEther } from "viem";
-import { univ2Pool_abi } from "../abi/pool/univ2pool";
-import { MulticallHelper } from "../multicallHelper";
-import { v2FactoryAddressMap } from "../constants/factory";
-import { v2_factory_abi } from "../abi/factory/univ2Factory";
-import { WETH } from "../constants/tokenAddress";
+import { univ2Pool_abi } from "../../abi/pool/univ2pool";
+import { MulticallHelper } from "../../toolHelpers/multicallHelper";
+import { v2FactoryAddressMap } from "../../constants/factory";
+import { v2_factory_abi } from "../../abi/factory/univ2Factory";
+import { WETH } from "../../constants/tokenAddress";
 import { _2_POW_96, customMaxInteger } from "./constants";
-import { checkIfWETH } from "../utils";
-import { Basic2AssetEdge } from "../types/edgs";
-import { erc20_abi } from "../abi/erc20";
+import { checkIfWETH } from "../../utils";
+import { Basic2AssetEdge } from "../../types/sqliteEdges";
+import { erc20_abi } from "../../abi/erc20";
 
 // The class is to calculate the TVL of a pool, quoted in ETH
 export class ETHTVLCaculator {

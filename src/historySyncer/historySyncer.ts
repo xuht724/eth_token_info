@@ -1,16 +1,25 @@
-import { SqliteHelper } from "../sqliteHelper/sqliteHelper";
-import { Web3Utils } from "../web3utils";
-import { v2FactoryInfoMap, v3FactoryInfoMap } from "../constants/factory";
+import { SqliteHelper } from "../toolHelpers/sqliteHelper/sqliteHelper";
+import { Web3Utils } from "../toolHelpers/web3utils";
+import {
+    balancerVaultAddress,
+    balancerFactoryInfoMap,
+    v2FactoryInfoMap,
+    v3FactoryInfoMap,
+} from "../constants/factory";
 import { v2_factory_abi } from "../abi/factory/univ2Factory";
 import { historicalLogger } from "../logger";
 import winston from "winston";
 import { EventLog } from "web3";
 import { EventHandler } from "../eventHandler";
 import { v3_factory_abi } from "../abi/factory/univ3Factory";
-import { MulticallHelper } from "../multicallHelper/multicallHelper";
+import { MulticallHelper } from "../toolHelpers/multicallHelper/multicallHelper";
 import { CheckPointData } from "../types";
+import { balancerVault_abi } from "../abi/pool/balancervault";
+import { balancerWeightedFactoryABI } from "../abi/factory/balancerWeightedFactory";
 
-const blockInterval = 1000;
+const largeInterval = 50000;
+const middleInterval = 10000;
+const smallInterval = 100;
 
 export class HistorySyncer {
     web3Utils: Web3Utils;
@@ -48,7 +57,9 @@ export class HistorySyncer {
         checkPointData: CheckPointData
     ) {
         for (const factory in checkPointData.v2_Historical_BlockNumber_Map) {
-            console.log(factory);
+            let { protocol } = v2FactoryInfoMap[factory];
+            console.log(protocol);
+
             let beginBlockNumber =
                 checkPointData.v2_Historical_BlockNumber_Map[factory];
             await this.syncHistoricalV2Pool(
@@ -58,10 +69,26 @@ export class HistorySyncer {
             );
         }
         for (const factory in checkPointData.v3_Historical_BlockNumber_Map) {
-            console.log(factory);
+            let { protocol } = v3FactoryInfoMap[factory];
+            console.log(protocol);
             let beginBlockNumber =
                 checkPointData.v3_Historical_BlockNumber_Map[factory];
             await this.syncHistoricalV3Pool(
+                factory,
+                beginBlockNumber,
+                currenBlockNumber
+            );
+        }
+
+        for (const factory in checkPointData.balancer_Weighted_Historical_BlockNumber_Map) {
+            let { protocol } = balancerFactoryInfoMap[factory];
+            console.log(protocol);
+
+            let beginBlockNumber =
+                checkPointData.balancer_Weighted_Historical_BlockNumber_Map[
+                    factory
+                ];
+            await this.syncHistoricalBalancerWeightedPool(
                 factory,
                 beginBlockNumber,
                 currenBlockNumber
@@ -135,14 +162,14 @@ export class HistorySyncer {
         while (currentBlock < endBlock) {
             try {
                 const toBlock = Math.min(
-                    currentBlock + blockInterval,
+                    currentBlock + smallInterval,
                     endBlock
                 );
 
                 this.logger.info(
                     `Syncing ${protocol} data from block ${currentBlock} to ${toBlock}`
                 );
-
+                console.log(toBlock);
                 const events = await v2FactoryContract.getPastEvents(
                     "PairCreated",
                     {
@@ -152,6 +179,7 @@ export class HistorySyncer {
                     }
                 );
 
+                // console.log(events);
                 let eventLogs = events.map((value) => {
                     return value as EventLog;
                 });
@@ -202,6 +230,58 @@ export class HistorySyncer {
         );
     }
 
+    public async syncHistoricalBalancerWeightedPool(
+        factoryAddress: string,
+        startBlock: number,
+        endBlock: number
+    ) {
+        let factoryContract = new this.web3Utils.myWeb3.eth.Contract(
+            balancerWeightedFactoryABI,
+            factoryAddress
+        );
+        let currentBlock = startBlock;
+        while (currentBlock < endBlock) {
+            try {
+                const toBlock = Math.min(
+                    currentBlock + largeInterval,
+                    endBlock
+                );
+                historicalLogger.info(
+                    `Syncing balancer data from block ${currentBlock} to ${toBlock}`
+                );
+                const events = await factoryContract.getPastEvents(
+                    "PoolCreated",
+                    {
+                        filter: {},
+                        fromBlock: currentBlock,
+                        toBlock,
+                    }
+                );
+
+                let eventLogs = events.map((value) => {
+                    return value as EventLog;
+                });
+
+                // Use Promise.all to fetch token information concurrently
+                await Promise.all(
+                    eventLogs.map(async (event: EventLog) => {
+                        await EventHandler.handleBalancerWeightedCreatedEvent(
+                            event,
+                            this.web3Utils,
+                            this.sqliteHelper,
+                            this.multicallHelper
+                        );
+                    })
+                );
+                currentBlock = toBlock + 1;
+                // Add a delay to avoid overloading the node and API
+                await sleep(1000); // 1 second delay
+            } catch (error) {
+                await sleep(5000); // 5 seconds delay before retrying
+            }
+        }
+    }
+
     public async syncHistoricalV3Pool(
         factoryAddress: string,
         startBlock: number,
@@ -217,7 +297,7 @@ export class HistorySyncer {
         while (currentBlock < endBlock) {
             try {
                 const toBlock = Math.min(
-                    currentBlock + blockInterval,
+                    currentBlock + largeInterval,
                     endBlock
                 );
 

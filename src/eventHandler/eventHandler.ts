@@ -1,8 +1,8 @@
 import { EventLog } from "web3";
 import { ProtocolName, v2Edge, v3Edge } from "../types";
-import { Web3Utils } from "../web3utils";
-import { SqliteHelper } from "../sqliteHelper";
-import { univ2Pool_abi } from "../abi/pool/univ2pool";
+import { Web3Utils } from "../toolHelpers/web3utils";
+import { SqliteHelper } from "../toolHelpers/sqliteHelper";
+import { MulticallHelper } from "../toolHelpers/multicallHelper";
 
 export class EventHandler {
     static decodeV2PoolCreatedEvent(
@@ -55,14 +55,14 @@ export class EventHandler {
             ]);
 
             if (token0 && token1) {
-                sqliteHelper.addToken(token0);
-                sqliteHelper.addToken(token1);
+                await sqliteHelper.addToken(token0);
+                await sqliteHelper.addToken(token1);
 
                 let edge = this.decodeV2PoolCreatedEvent(protocol, event);
                 await sqliteHelper.addV2Edge(edge);
             }
         } catch (error) {
-            throw new Error("Get Token Info Error");
+            console.log("Get Token Error");
         }
     }
 
@@ -86,14 +86,43 @@ export class EventHandler {
                 token1Info,
             ]);
             if (token0 && token1) {
-                sqliteHelper.addToken(token0);
-                sqliteHelper.addToken(token1);
+                await sqliteHelper.addToken(token0);
+                await sqliteHelper.addToken(token1);
 
                 let edge = this.decodeV3PoolCreatedEvent(protocol, event);
                 await sqliteHelper.addV3Edge(edge);
             }
         } catch (error) {
-            throw new Error("Get Token Info Error");
+            console.log("Get Token Error");
+        }
+    }
+
+    static async handleBalancerWeightedCreatedEvent(
+        event: EventLog,
+        web3utils: Web3Utils,
+        sqliteHelper: SqliteHelper,
+        multicallHelper: MulticallHelper
+    ) {
+        let poolAddress = event.returnValues.pool as string;
+        let pool = await multicallHelper.MulticallBalancerInitialInfo(
+            poolAddress
+        );
+        if (pool) {
+            try {
+                let callInfo = pool.tokens.map((token) => {
+                    return web3utils.getTokenInfo(token);
+                });
+                let tokenInfos = (await Promise.all(callInfo)).filter(
+                    (value) => value != null
+                );
+                for (const info of tokenInfos) {
+                    await sqliteHelper.addToken(info!);
+                }
+                await sqliteHelper.addBalancerWeightedPool(pool);
+            } catch (error) {
+                console.log("Get Token Error");
+                throw error;
+            }
         }
     }
 }

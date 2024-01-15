@@ -1,5 +1,7 @@
-import { ProtocolName } from "./protocol";
+import { PoolType, ProtocolName } from "./enum";
+import { Token } from "./token";
 
+//
 export interface v2Edge {
     protocolName: ProtocolName;
     pairAddress: string;
@@ -25,3 +27,12 @@ export interface Basic2AssetEdge {
     token0: string;
     token1: string;
 }
+
+export type balancerWeightedPool = {
+    protocolName: ProtocolName;
+    poolAddress: string;
+    poolId: string;
+    tokens: string[];
+    weights: bigint[];
+    swapFee: bigint;
+};

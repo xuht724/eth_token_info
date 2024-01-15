@@ -1,24 +1,32 @@
 import Web3, { WebSocketProvider } from "web3";
-import { v2FactoryInfoMap, v3FactoryInfoMap } from "../constants/factory";
+import {
+    balancerFactoryInfoMap,
+    v2FactoryInfoMap,
+    v3FactoryInfoMap,
+} from "../constants/factory";
 import { v2_factory_abi } from "../abi/factory/univ2Factory";
 import { v3_factory_abi } from "../abi/factory/univ3Factory";
 import { EventLog } from "web3";
-import { Web3Utils } from "../web3utils";
-import { SqliteHelper } from "../sqliteHelper";
+import { Web3Utils } from "../toolHelpers/web3utils";
+import { SqliteHelper } from "../toolHelpers/sqliteHelper";
 import { EventHandler } from "../eventHandler/eventHandler";
+import { balancerWeightedFactoryABI } from "../abi/factory/balancerWeightedFactory";
+import { MulticallHelper } from "../toolHelpers/multicallHelper";
 
 export class Listener {
     wsWeb3: Web3;
     web3Utils: Web3Utils;
     sqliteHelper: SqliteHelper;
+    multicallHelper: MulticallHelper;
 
     constructor(
         WS_NODE_URL: string,
         web3Utils: Web3Utils,
-        sqliteHelper: SqliteHelper
+        sqliteHelper: SqliteHelper,
+        multicallHelper: MulticallHelper
     ) {
         this.wsWeb3 = new Web3(new WebSocketProvider(WS_NODE_URL));
-
+        this.multicallHelper = multicallHelper;
         this.web3Utils = web3Utils;
         this.sqliteHelper = sqliteHelper;
     }
@@ -35,7 +43,9 @@ export class Listener {
         // Create listeners listen to balancer factory
 
         //
-
+        for (const factoryAddress of Object.keys(balancerFactoryInfoMap)) {
+            this.createBalancerWeighthedFactoryListener(factoryAddress);
+        }
         console.log("启动监听线程");
     }
 
@@ -80,6 +90,29 @@ export class Listener {
                     protocol,
                     this.web3Utils,
                     this.sqliteHelper
+                );
+            });
+    }
+
+    private createBalancerWeighthedFactoryListener(factoryAddress: string) {
+        const { protocol } = balancerFactoryInfoMap[factoryAddress];
+        const balancerFactoryContract = new this.wsWeb3.eth.Contract(
+            balancerWeightedFactoryABI,
+            factoryAddress
+        );
+
+        // Listen to PairCreated events from the latest block
+        balancerFactoryContract.events
+            .PoolCreated({ fromBlock: "latest" })
+            .on("data", async (event: EventLog) => {
+                console.log(
+                    `New Balancer PairCreated event in ${factoryAddress}:`
+                );
+                await EventHandler.handleBalancerWeightedCreatedEvent(
+                    event,
+                    this.web3Utils,
+                    this.sqliteHelper,
+                    this.multicallHelper
                 );
             });
     }

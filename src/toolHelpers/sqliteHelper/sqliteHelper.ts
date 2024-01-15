@@ -1,9 +1,9 @@
 import sqlite3 from "sqlite3";
 import winston, { add } from "winston";
-import { TokenInfo, v2Edge, v3Edge, ProtocolName } from "../types"; // Update the path to match your project structure
-import { sqliteLogger } from "../logger";
+import { Token, v2Edge, v3Edge, ProtocolName } from "../../types"; // Update the path to match your project structure
+import { sqliteLogger } from "../../logger";
 import { TableName } from "./enum";
-import { Basic2AssetEdge } from "../types/edgs";
+import { Basic2AssetEdge, balancerWeightedPool } from "../../types/sqliteEdges";
 
 export class SqliteHelper {
     db: sqlite3.Database;
@@ -26,6 +26,7 @@ export class SqliteHelper {
         this.createTokenTable();
         this.createV2EdgeTable();
         this.createV3EdgeTable();
+        this.createBalancerWeighthedPoolTable();
     }
 
     private createTokenTable(): void {
@@ -48,6 +49,7 @@ export class SqliteHelper {
                 token1 TEXT,
                 blockTimeLast INTEGER,
                 tag INTEGER,
+                tvl INTEGER,
                 FOREIGN KEY (token0) REFERENCES Token(address),
                 FOREIGN KEY (token1) REFERENCES Token(address)
             )
@@ -65,13 +67,30 @@ export class SqliteHelper {
                 tickSpacing INTEGER,
                 blockTimeLast INTEGER,
                 tag INTEGER,
+                tvl INTEGER,
                 FOREIGN KEY (token0) REFERENCES Token(address),
                 FOREIGN KEY (token1) REFERENCES Token(address)
             )
         `);
     }
 
-    public addToken(token: TokenInfo): void {
+    private createBalancerWeighthedPoolTable(): void {
+        this.db.run(`
+            CREATE TABLE IF NOT EXISTS BalancerWeightedPool (
+                address TEXT PRIMARY KEY,
+                protocolName TEXT,
+                poolId TEXT NOT NULL,
+                tokens TEXT NOT NULL,
+                weights TEXT NOT NULL,
+                swapFee INTEGER NOT NULL,
+                blockTimeLast INTEGER,
+                tag INTEGER,
+                tvl INTEGER
+            )
+        `);
+    }
+
+    public async addToken(token: Token): Promise<void> {
         // Check if decimals is greater than 0
         if (token.decimals <= 0) {
             this.logger.error(
@@ -88,14 +107,13 @@ export class SqliteHelper {
             token.name,
             token.symbol,
         ];
-
-        this.db.run(query, params, (err) => {
-            if (err) {
-                // this.logger.error('Error adding Token:', err.message);
-            } else {
-                this.logger.info(`Token with address ${token.address} added.`);
-            }
-        });
+        try {
+            await this.runQuery(query, params);
+            // console.log(`TVL for ${table} with address ${address} updated.`);
+        } catch (error) {
+            console.log(error);
+            this.logger.info(`Token with address ${token.address} added.`);
+        }
     }
 
     public async updateEdgeTVL(
@@ -174,6 +192,45 @@ export class SqliteHelper {
         } catch (error) {
             this.logger.error(
                 `Error adding V2Edge: ${edge.pairAddress.toLowerCase()}, Edge has existed`
+            );
+        }
+    }
+
+    public async addBalancerWeightedPool(
+        edge: balancerWeightedPool
+    ): Promise<void> {
+        const query = `
+        INSERT INTO BalancerWeightedPool (
+          address, protocolName, poolId, tokens,
+          weights, swapFee
+        ) VALUES (?, ?, ?, ?, ?, ?);
+      `;
+        // 将 bigint[] 转换为字符串数组
+        const weightsStringArray = edge.weights.map((weight) =>
+            weight.toString()
+        );
+
+        const tokensString = JSON.stringify(edge.tokens);
+        const weightsString = JSON.stringify(weightsStringArray);
+
+        const params = [
+            edge.poolAddress.toLowerCase(),
+            edge.protocolName,
+            edge.poolId.toLowerCase(),
+            tokensString,
+            weightsString,
+            edge.swapFee.toString(),
+        ];
+
+        try {
+            await this.runQuery(query, params);
+            this.logger.info(
+                `BalancerEdge with address ${edge.poolAddress.toLowerCase()} added.`
+            );
+        } catch (error) {
+            console.log(error);
+            this.logger.error(
+                `Error adding BalancerEdge: ${edge.poolAddress.toLowerCase()}, Edge has existed`
             );
         }
     }

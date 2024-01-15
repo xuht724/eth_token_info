@@ -1,6 +1,6 @@
-import { TokenInfo } from "./token";
-import { v2Edge, v3Edge } from "./edgs";
-import { protocol, ProtocolName } from "./protocol";
+import { Token } from "./token";
+import { v2Edge, v3Edge } from "./sqliteEdges";
+import { protocol, ProtocolName, PoolType } from "./enum";
 export { CheckPointData } from "./checkPoint";
 
-export { TokenInfo, v2Edge, v3Edge, protocol, ProtocolName };
+export { Token, v2Edge, v3Edge, protocol, ProtocolName, PoolType };

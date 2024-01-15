@@ -1,7 +1,7 @@
 // import { readFileSync, writeFileSync } from "fs";
-// import { SqliteHelper } from "../sqliteHelper/sqliteHelper";
-// import { GETH_URL, sqlite_database } from "../config";
-// import { MulticallHelper } from "./multicaller";
+// import { SqliteHelper } from "../toolHelpers/sqliteHelper";
+// import { HTTP_ALCHEMY_URL, sqlite_database } from "../config";
+// import { MulticallHelper } from "../toolHelpers/multicallHelper";
 // import Web3, { HttpProvider } from "web3";
 
 // async function main() {
@@ -23,7 +23,7 @@
 //     }
 
 //     const sqliteHelper = new SqliteHelper(sqlite_database);
-//     const multicallHelper = new MulticallHelper(GETH_URL);
+//     const multicallHelper = new MulticallHelper(HTTP_ALCHEMY_URL);
 
 //     let addressList, getTimestampFunction, updateTimestampFunction;
 

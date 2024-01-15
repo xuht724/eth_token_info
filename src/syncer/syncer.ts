@@ -1,8 +1,8 @@
 import { Listener } from "../listener";
-import { Web3Utils } from "../web3utils";
-import { SqliteHelper } from "../sqliteHelper";
+import { Web3Utils } from "../toolHelpers/web3utils";
+import { SqliteHelper } from "../toolHelpers/sqliteHelper";
 import * as fs from "fs";
-import { MulticallHelper } from "../multicallHelper";
+import { MulticallHelper } from "../toolHelpers/multicallHelper";
 import { HistorySyncer } from "../historySyncer";
 import { CheckPointData } from "../types";
 
@@ -36,7 +36,12 @@ export class Syncer {
         this.web3Utils = new Web3Utils(nodeUrl);
         this.sqliteHelper = new SqliteHelper(sqliteDBPath);
         this.multicallHelper = new MulticallHelper(nodeUrl);
-        this.listener = new Listener(wsUrl, this.web3Utils, this.sqliteHelper);
+        this.listener = new Listener(
+            wsUrl,
+            this.web3Utils,
+            this.sqliteHelper,
+            this.multicallHelper
+        );
 
         this.historySyncer = new HistorySyncer(
             this.web3Utils,
@@ -77,7 +82,7 @@ export class Syncer {
                 });
             case SyncMode.WARM:
                 console.log(this.checkPointData);
-                // this.listener.createListeners();
+                this.listener.createListeners();
                 this.historySyncer
                     .SyncFromWarm(blockNumber, this.checkPointData!)
                     .then(() => {
@@ -109,6 +114,15 @@ export class Syncer {
             ).forEach((key) => {
                 this.checkPointData!.v3_Historical_BlockNumber_Map[key] =
                     currentBlockNumber;
+            });
+
+            // Update balancer_Historical_BlockNumber_Map
+            Object.keys(
+                this.checkPointData.balancer_Weighted_Historical_BlockNumber_Map
+            ).forEach((key) => {
+                this.checkPointData!.balancer_Weighted_Historical_BlockNumber_Map[
+                    key
+                ] = currentBlockNumber;
             });
 
             const checkPointContent = JSON.stringify(this.checkPointData);
