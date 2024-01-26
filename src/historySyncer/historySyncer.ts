@@ -1,7 +1,6 @@
 import { SqliteHelper } from "../toolHelpers/sqliteHelper/sqliteHelper";
 import { Web3Utils } from "../toolHelpers/web3utils";
 import {
-    balancerVaultAddress,
     balancerFactoryInfoMap,
     v2FactoryInfoMap,
     v3FactoryInfoMap,
@@ -14,12 +13,11 @@ import { EventHandler } from "../eventHandler";
 import { v3_factory_abi } from "../abi/factory/univ3Factory";
 import { MulticallHelper } from "../toolHelpers/multicallHelper/multicallHelper";
 import { CheckPointData } from "../types";
-import { balancerVault_abi } from "../abi/pool/balancervault";
 import { balancerWeightedFactoryABI } from "../abi/factory/balancerWeightedFactory";
 
 const largeInterval = 50000;
 const middleInterval = 10000;
-const smallInterval = 100;
+const smallInterval = 1000;
 
 export class HistorySyncer {
     web3Utils: Web3Utils;
@@ -86,7 +84,7 @@ export class HistorySyncer {
 
             let beginBlockNumber =
                 checkPointData.balancer_Weighted_Historical_BlockNumber_Map[
-                    factory
+                factory
                 ];
             await this.syncHistoricalBalancerWeightedPool(
                 factory,
@@ -169,7 +167,7 @@ export class HistorySyncer {
                 this.logger.info(
                     `Syncing ${protocol} data from block ${currentBlock} to ${toBlock}`
                 );
-                console.log(toBlock);
+                // console.log(toBlock);
                 const events = await v2FactoryContract.getPastEvents(
                     "PairCreated",
                     {

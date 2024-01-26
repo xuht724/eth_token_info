@@ -108,7 +108,7 @@ export class ETHTVLCaculator {
         let batch = 1000;
         let tvlMap: Map<string, bigint> = new Map<string, bigint>();
         for (let i = 0; i < edges.length; i += batch) {
-            console.log(i);
+            console.log(`${i}/${edges.length}`);
             let end = edges.length > i + batch ? i + batch : edges.length;
             let callList: any[] = [];
             let subedges = edges.slice(i, end);

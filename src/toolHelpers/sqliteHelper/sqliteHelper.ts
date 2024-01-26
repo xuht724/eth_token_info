@@ -109,10 +109,10 @@ export class SqliteHelper {
         ];
         try {
             await this.runQuery(query, params);
-            // console.log(`TVL for ${table} with address ${address} updated.`);
+            console.log('add new token', token.address.toLowerCase(), token.name, token.symbol);
         } catch (error) {
-            console.log(error);
-            this.logger.info(`Token with address ${token.address} added.`);
+            console.log(`Token with address ${token.name} ${token.symbol} added.`);
+            this.logger.info(`Token with address ${token.name} ${token.symbol} added.`);
         }
     }
 
@@ -190,6 +190,7 @@ export class SqliteHelper {
                 `V2Edge with address ${edge.pairAddress.toLowerCase()} added.`
             );
         } catch (error) {
+            console.log(`Error adding V2Edge: ${edge.pairAddress.toLowerCase()}, Edge has existed`)
             this.logger.error(
                 `Error adding V2Edge: ${edge.pairAddress.toLowerCase()}, Edge has existed`
             );
@@ -253,6 +254,7 @@ export class SqliteHelper {
                 `V3Edge with address ${edge.pairAddress.toLowerCase()} added.`
             );
         } catch (error) {
+            console.log(`Error adding V3Edge: ${edge.pairAddress.toLowerCase()}, Edge has existed`)
             this.logger.error(
                 `Error adding V3Edge: ${edge.pairAddress.toLowerCase()} Edge has existed`
             );
@@ -458,7 +460,7 @@ export class SqliteHelper {
         }
 
         // Return a Promise that resolves when all updates are complete
-        return Promise.all(promises).then(() => {});
+        return Promise.all(promises).then(() => { });
     }
 
     public async batchUpdateV2EdgeBlockTimestamp(
@@ -495,7 +497,7 @@ export class SqliteHelper {
         }
 
         // Return a Promise that resolves when all updates are complete
-        return Promise.all(promises).then(() => {});
+        return Promise.all(promises).then(() => { });
     }
 
     public async batchUpdateV3EdgeBlockTimestamp(
@@ -533,7 +535,7 @@ export class SqliteHelper {
         }
 
         // Return a Promise that resolves when all updates are complete
-        return Promise.all(promises).then(() => {});
+        return Promise.all(promises).then(() => { });
     }
 
     private runQuery(query: string, params: any[]): Promise<any[]> {
