@@ -35,7 +35,9 @@ export class SqliteHelper {
                 address TEXT PRIMARY KEY,
                 decimals INTEGER,
                 name TEXT,
-                symbol TEXT
+                symbol TEXT,
+                sellTax INTEGER,
+                buyTax INTEGER
             )
         `);
     }
@@ -308,6 +310,55 @@ export class SqliteHelper {
         }
     }
 
+    public async getTokenWithNoTaxRate(): Promise<string[]> {
+        const query = "SELECT address FROM Token WHERE sellTax IS NULL OR buyTax IS NULL";
+        try {
+            const rows = await this.runQuery(query, []);
+
+            const addresses: string[] = rows.map((row: any) => row.address);
+
+            return addresses;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async batchUpdateTokenTaxRate(
+        dataMap: Map<string, any>
+    ): Promise<void> {
+        const promises: Promise<void>[] = [];
+
+        for (const [address, taxs] of dataMap.entries()) {
+
+            const updateQuery =
+                "UPDATE Token SET sellTax = ?, buyTax = ? WHERE address = ?";
+
+            const queryParams = [taxs[0], taxs[1], address];
+
+            const promise = new Promise<void>((resolve, reject) => {
+                this.db.run(updateQuery, queryParams, (err) => {
+                    if (err) {
+                        this.logger.error(
+                            `Error updating sellTax and buyTax for address ${address}:`,
+                            err.message
+                        );
+                        reject(err);
+                    } else {
+                        this.logger.info(
+                            `sellTax and buyTax update complete for address ${address}.`
+                        );
+                        resolve();
+                    }
+                });
+            });
+
+            promises.push(promise);
+        }
+
+        // Return a Promise that resolves when all updates are complete
+        return Promise.all(promises).then(() => { });
+    }
+
     public async getV2Edges(minTag: number = 0): Promise<v2Edge[]> {
         const query = "SELECT * FROM V2Edge WHERE tag >= ?";
         try {
@@ -325,6 +376,27 @@ export class SqliteHelper {
             return v2Edges;
         } catch (error) {
             // this.logger.error('Error fetching V2Edges:', error.message);
+            throw error;
+        }
+    }
+
+    public async getV2EdgesByTVL(minTvl: bigint = 0n): Promise<v2Edge[]> {
+        const query = "SELECT * FROM V2Edge WHERE tvl >= ?";
+        try {
+            const rows = await this.runQuery(query, [minTvl.toString()]);
+
+            const v2Edges: v2Edge[] = rows.map((row: any) => ({
+                pairAddress: row.address,
+                protocolName: row.protocolName,
+                token0: row.token0,
+                token1: row.token1,
+                blockTimeLast: row.blockTimeLast,
+                tag: row.tag,
+                tvl: row.tvl
+            }));
+
+            return v2Edges;
+        } catch (error) {
             throw error;
         }
     }
@@ -394,6 +466,16 @@ export class SqliteHelper {
         }
     }
 
+    public async getV2EdgeAddressesByTVL(minTvl: bigint = 0n): Promise<any[]> {
+        const query = "SELECT address,token0,token1 FROM V2Edge WHERE tvl >= ?";
+        try {
+            const rows = await this.runQuery(query, [minTvl.toString()]);
+            return rows;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     public async getV3Edges(minTag: number = 0): Promise<v3Edge[]> {
         const query = "SELECT * FROM V3Edge WHERE tag >= ?";
         try {
@@ -417,6 +499,29 @@ export class SqliteHelper {
         }
     }
 
+    public async getV3EdgesByTVL(minTvl: bigint = 0n): Promise<v3Edge[]> {
+        const query = "SELECT * FROM V3Edge WHERE tvl >= ?";
+        try {
+            const rows = await this.runQuery(query, [minTvl.toString()]);
+
+            const v3Edges: v3Edge[] = rows.map((row: any) => ({
+                pairAddress: row.address,
+                protocolName: row.protocolName,
+                token0: row.token0,
+                token1: row.token1,
+                fee: row.fee,
+                tickSpacing: row.tickSpacing,
+                blockTimeLast: row.blockTimeLast,
+                tag: row.tag,
+                tvl: row.tvl
+            }));
+
+            return v3Edges;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     public async getV3EdgeAddresses(minTag: number = 0): Promise<string[]> {
         const query = "SELECT address FROM V3Edge WHERE tag >= ?";
         try {
@@ -426,6 +531,16 @@ export class SqliteHelper {
             return rows.map((row: any) => row.address);
         } catch (error) {
             // this.logger.error('Error fetching V3Edge addresses:', error.message);
+            throw error;
+        }
+    }
+
+    public async getV3EdgeAddressesByTVL(minTvl: bigint = 0n): Promise<string[]> {
+        const query = "SELECT address FROM V3Edge WHERE tvl >= ?";
+        try {
+            const rows = await this.runQuery(query, [minTvl.toString()]);
+            return rows.map((row: any) => row.address);
+        } catch (error) {
             throw error;
         }
     }

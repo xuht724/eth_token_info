@@ -219,6 +219,16 @@ export class MulticallHelper {
         }
     }
 
+    public async batchGetV2EdgeBlockTimestamp(v2Pools: string[]): Promise<Map<string, number>> {
+        let res = new Map<string, number>();
+        return res;
+    }
+
+    public async batchGetV3EdgeBlockTimestamp(v3Pools: string[]): Promise<Map<string, number>> {
+        let res = new Map<string, number>();
+        return res;
+    }
+
     public async MulticallCurveStablSwapDocument(
         poolAddress: string
     ): Promise<CurveStableSwapPoolDocument | undefined> {
