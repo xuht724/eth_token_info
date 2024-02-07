@@ -9,6 +9,7 @@ import { mainnet } from "viem/chains";
 import { v2_factory_abi } from "../../abi/factory/univ2Factory";
 import { erc20_abi } from "../../abi/erc20";
 import { univ2Pool_abi } from "../../abi/pool/univ2pool";
+import { uniV3Pool_abi } from "../../abi/pool/univ3pool";
 import { PoolType, ProtocolName, v2Edge } from "../../types";
 import { balancerWeightedPoolABI } from "../../abi/pool/balancerWeightedPool";
 import { balancerWeightedPool } from "../../types/sqliteEdges";
@@ -219,13 +220,110 @@ export class MulticallHelper {
         }
     }
 
-    public async batchGetV2EdgeBlockTimestamp(v2Pools: string[]): Promise<Map<string, number>> {
+    public async batchGetV2EdgeBlockTimestamp(v2Pools: any[]): Promise<Map<string, number>> {
         let res = new Map<string, number>();
+        const batchSize = 2000;
+
+        for (let i = 0; i < v2Pools.length; i += batchSize) {
+            const batch = v2Pools.slice(i, i + batchSize);
+            let contracts: any[] = [];
+
+            for (const v2Pool of batch) {
+                const v2PoolContract = {
+                    address: v2Pool.address,
+                    abi: univ2Pool_abi,
+                } as const;
+                contracts.push({
+                    ...v2PoolContract,
+                    functionName: "getReserves"
+                });
+            }
+
+            try {
+                const data = await this.publicClient.multicall({
+                    contracts: contracts,
+                });
+                data.forEach((result: any, index) => {
+                    const v2Edge = batch[index].address;
+                    if (result !== null && result !== undefined && result.status) {
+                        const blockTimestampLast = result.result[2];
+                        res.set(v2Edge, blockTimestampLast);
+                    }
+                });
+            } catch (error) {
+                throw error;
+            }
+        }
         return res;
     }
 
     public async batchGetV3EdgeBlockTimestamp(v3Pools: string[]): Promise<Map<string, number>> {
         let res = new Map<string, number>();
+        const batchSize = 2000;
+
+        let slotdatas = [];
+        for (let i = 0; i < v3Pools.length; i += batchSize) {
+            const batch = v3Pools.slice(i, i + batchSize);
+            let contracts: any[] = [];
+
+            for (const v3PoolAddress of batch) {
+                const v3PoolContract = {
+                    address: v3PoolAddress,
+                    abi: uniV3Pool_abi,
+                } as const;
+                contracts.push({
+                    ...v3PoolContract,
+                    functionName: "slot0"
+                });
+            }
+
+            try {
+                const slotdata = await this.publicClient.multicall({
+                    contracts: contracts,
+                });
+                slotdatas.push(slotdata.values());
+            } catch (error) {
+                throw error;
+            }
+        }
+        for (let i = 0; i < v3Pools.length; i += batchSize) {
+            const slotdata = slotdatas.slice(i, i + batchSize);
+            const batch = v3Pools.slice(i, i + batchSize);
+            let observations: any[] = [];
+
+            let v3EdgeList: string[] = []
+            slotdata.forEach((result: any, index) => {
+                const v3Edge = batch[index];
+                if (result !== null && result !== undefined && result.status) {
+                    v3EdgeList.push(v3Edge);
+                    const observationIndex = result.result[2];
+                    const v3PoolContract = {
+                        address: v3Edge,
+                        abi: uniV3Pool_abi,
+                    } as const;
+                    observations.push({
+                        ...v3PoolContract,
+                        functionName: "observations",
+                        args: [observationIndex]
+                    });
+                }
+            });
+            try{
+                const observationData = await this.publicClient.multicall({
+                    contracts: observations,
+                });
+
+                observationData.forEach((result: any, index) => {
+                    const v3Edge = v3EdgeList[index];
+                    if (result !== null && result !== undefined && result.status) {
+                        const blockTimestamp = result.result[0];
+                        res.set(v3Edge, blockTimestamp);
+                    }
+                })
+            } catch (error) {
+                throw error;
+            }
+        }
         return res;
     }
 
