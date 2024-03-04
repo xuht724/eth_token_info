@@ -102,12 +102,13 @@ export class SqliteHelper {
         }
 
         const query =
-            "INSERT INTO Token (address, decimals, name, symbol) VALUES (?, ?, ?, ?)";
+            "INSERT INTO Token (address, decimals, name, symbol, buyTax) VALUES (?, ?, ?, ?, ?)";
         const params = [
             token.address.toLowerCase(),
             token.decimals,
             token.name,
             token.symbol,
+            token.buyTax
         ];
         try {
             await this.runQuery(query, params);
@@ -322,6 +323,19 @@ export class SqliteHelper {
             throw error;
         }
     }
+    public async getTokenWithNoBuyTaxRate(): Promise<string[]> {
+        const query = "SELECT address FROM Token WHERE buyTax IS NULL";
+        try {
+            const rows = await this.runQuery(query, []);
+
+            const addresses: string[] = rows.map((row: any) => row.address);
+
+            return addresses;
+        } catch (error) {
+            throw error;
+        }
+    }
+
 
     public async batchUpdateTokenTaxRate(
         dataMap: Map<string, any>

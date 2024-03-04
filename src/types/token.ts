@@ -3,4 +3,5 @@ export interface Token {
     decimals: number;
     name?: string;
     symbol?: string;
+    buyTax?: number;
 }

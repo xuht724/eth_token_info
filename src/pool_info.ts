@@ -1,8 +1,10 @@
 import {
+    GETH_URL,
     HTTP_ALCHEMY_URL,
     HTTP_NODE_URL,
     WEBSOCKET_NODE_URL,
     WS_ALCHEMY_URL,
+    WS_GETH_URL,
     checkPoint,
     sqlite_database,
 } from "./config";
@@ -10,8 +12,8 @@ import { Syncer } from "./syncer";
 
 async function main() {
     let syncer = new Syncer(
-        HTTP_NODE_URL,
-        WEBSOCKET_NODE_URL,
+        GETH_URL,
+        WS_GETH_URL,
         sqlite_database,
         checkPoint
     );
@@ -23,6 +25,7 @@ async function main() {
     });
 
     await syncer.startSync();
+    await syncer.close();
 }
 
 main();

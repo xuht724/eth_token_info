@@ -17,7 +17,7 @@ import { balancerWeightedFactoryABI } from "../abi/factory/balancerWeightedFacto
 
 const largeInterval = 50000;
 const middleInterval = 10000;
-const smallInterval = 1000;
+const smallInterval = 5000;
 
 export class HistorySyncer {
     web3Utils: Web3Utils;

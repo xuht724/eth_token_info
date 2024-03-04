@@ -5,6 +5,7 @@ import * as fs from "fs";
 import { MulticallHelper } from "../toolHelpers/multicallHelper";
 import { HistorySyncer } from "../historySyncer";
 import { CheckPointData } from "../types";
+import { ViemListener } from "../listener/viemListener";
 
 enum SyncMode {
     COLD = "cold",
@@ -21,7 +22,9 @@ export class Syncer {
     checkPointPath: string = "";
     checkPointData: CheckPointData | null;
 
-    listener: Listener;
+    // listener: Listener;
+
+    viemListener: ViemListener;
     web3Utils: Web3Utils;
     sqliteHelper: SqliteHelper;
     multicallHelper: MulticallHelper;
@@ -36,12 +39,13 @@ export class Syncer {
         this.web3Utils = new Web3Utils(nodeUrl);
         this.sqliteHelper = new SqliteHelper(sqliteDBPath);
         this.multicallHelper = new MulticallHelper(nodeUrl);
-        this.listener = new Listener(
-            wsUrl,
-            this.web3Utils,
-            this.sqliteHelper,
-            this.multicallHelper
-        );
+        // this.listener = new Listener(
+        //     wsUrl,
+        //     this.web3Utils,
+        //     this.sqliteHelper,
+        //     this.multicallHelper
+        // );
+        this.viemListener = new ViemListener(wsUrl, this.web3Utils, this.sqliteHelper, this.multicallHelper)
 
         this.historySyncer = new HistorySyncer(
             this.web3Utils,
@@ -75,14 +79,13 @@ export class Syncer {
         );
         switch (this.syncMode) {
             case SyncMode.COLD:
-                this.listener.createListeners();
                 this.historySyncer.SyncFromCold(blockNumber).then(() => {
                     this.InitialFlag = true;
                     console.log("冷启动完成");
                 });
             case SyncMode.WARM:
                 console.log(this.checkPointData);
-                this.listener.createListeners();
+                this.viemListener.init();
                 this.historySyncer
                     .SyncFromWarm(blockNumber, this.checkPointData!)
                     .then(() => {

@@ -7,6 +7,17 @@ export const v2FactoryAddressMap: { [key: string]: string } = {
     UniswapV2: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
 };
 
+export const FactoryAddressMap = {
+    UniswapV2: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+    SushiswapV2: "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
+    PancakeswapV2: "0x1097053Fd2ea711dad45caCcc45EfF7548fCB362",
+    Shibaswap: "0x115934131916C8b277DD010Ee02de363c09d037c",
+    UniswapV3: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+    SushiV3: "0xbACEB8eC6b9355Dfc0269C18bac9d6E2Bdc29C4F",
+    PancakeV3: "0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865"
+} as const
+
+
 type FactoryInfo = {
     protocol: ProtocolName;
     beginBlockNumber: number;

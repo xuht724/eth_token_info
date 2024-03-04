@@ -29,3 +29,7 @@ export const historicalLogger = createLogger({
         new transports.File({ filename: "./log/historical.log" }), // Log to a JSON file for arbPath data
     ],
 });
+
+export const unknownLogger = createLogger({
+    transports: [new transports.File({ filename: "./log/unknownLogger.log" })],
+});

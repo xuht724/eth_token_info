@@ -11,6 +11,7 @@ export enum protocol {
 }
 
 export enum ProtocolName {
+    Unknonwn = 'unknown',
     UniswapV2 = "uniswapV2",
     UniswapV3 = "uniswapV3",
     SushiswapV2 = "sushiswapV2",

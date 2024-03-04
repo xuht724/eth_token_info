@@ -32,6 +32,7 @@ export class Listener {
     }
 
     public createListeners() {
+
         //Create listeners listen to v2 factory
         for (const factoryAddress of Object.keys(v2FactoryInfoMap)) {
             this.createV2Listener(factoryAddress);
