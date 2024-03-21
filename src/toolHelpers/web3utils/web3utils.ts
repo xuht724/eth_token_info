@@ -175,6 +175,8 @@ export class Web3Utils {
                 toBlock: blockNumber,
             }
             )
+            console.log('TrxLogs Length', TransferLogs.length)
+
             for (let i = 0; i < TransferLogs.length; i++) {
                 let log = decodeEventLog({
                     abi: [
@@ -217,12 +219,16 @@ export class Web3Utils {
 
                 const txReceipt = await this.myWeb3.eth.getTransactionReceipt(TransferLogs[i].transactionHash);
                 if (txReceipt.logs.length == 1) {
+                    console.log('true');
                     buyflag = true;
                     // console.log(txReceipt);
                     break;
                 }
 
                 let log_addresses = [];
+
+                console.log(txReceipt);
+
                 for (let log of txReceipt.logs) {
                     if (log.topics != undefined && log.topics[0] == v2SwapHash) {
                         const swapinfo: DecodedParams = this.myWeb3.eth.abi.decodeLog(

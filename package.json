@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^5.3.2"
+    "typescript": "^5.4.2"
   },
   "dependencies": {
     "@uniswap/v2-sdk": "^4.3.0",
