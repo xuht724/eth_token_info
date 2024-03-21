@@ -7,13 +7,20 @@ import { v2SwapHash, transferHash } from "../constants/eventHash";
 import { DecodedParams } from "web3";
 import { Token } from "../types";
 
+async function testCalculateTokenTax(tokenAddress: string) {
+    const web3Utils = new Web3Utils(GETH_URL);
+    let buyTax = await web3Utils.calculateBuyTax_by_V2Pool(tokenAddress);
+    console.log(tokenAddress, buyTax);
+}
+// const token = "0x91be752d438d5f804345b5acb18de0c431ad470f"
+// testCalculateTokenTax(token);
 
 async function main() {
     const multicallHelper = new MulticallHelper(GETH_URL);
     const web3Utils = new Web3Utils(GETH_URL);
     const sqliteHelper = new SqliteHelper(sqlite_database);
     const currentBlock = Number(await web3Utils.myWeb3.eth.getBlockNumber());
-    let tokenList = await sqliteHelper.getTokenWithNoBuyTaxRate();
+    let tokenList = await sqliteHelper.getTokenWithZeroBuyTaxRate();
     // tokenList = [
     //     "0x91be752d438d5f804345b5acb18de0c431ad470f",
     //     "0xe92344b4edf545f3209094b192e46600a19e7c2d",

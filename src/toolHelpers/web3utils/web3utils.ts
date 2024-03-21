@@ -1,4 +1,4 @@
-import { Web3, HttpProvider, TransactionReceipt, DecodedParams } from "web3";
+import { Web3, HttpProvider, TransactionReceipt, DecodedParams, Contract, EventLog } from "web3";
 import axios from "axios";
 import { ProtocolName, Token, protocol, v2Edge } from "../../types";
 import { LRUCache } from "lru-cache";
@@ -7,8 +7,14 @@ import winston from "winston";
 
 import { web3Logger } from "../../logger";
 import { v2SwapHash } from "../../constants/eventHash";
-import { decodeEventLog } from "viem";
+import { decodeEventLog, toHex } from "viem";
 import { erc20_abi } from "../../abi/erc20";
+import { pack, keccak256 } from '@ethersproject/solidity'
+import { getCreate2Address } from '@ethersproject/address'
+
+
+const V2FACTORY = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f';
+const INIT_CODE_HASH = '0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f';
 
 export class Web3Utils {
     myWeb3: Web3;
@@ -23,6 +29,120 @@ export class Web3Utils {
         this.node_url = node_url;
         this.myWeb3 = new Web3(new HttpProvider(node_url));
         this.Logger = web3Logger;
+    }
+
+    public async calculateBuyTax_by_V2Pool(
+        tokenAddress: string,
+        currentBlock?: number
+    ) {
+        const V2FACTORY = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f';
+        const INIT_CODE_HASH = '0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f';
+        const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+        const TransferSignature = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+
+        let token0 = tokenAddress;
+        let token1 = WETH;
+        if (WETH < tokenAddress) {
+            token0 = WETH;
+            token1 = tokenAddress;
+        }
+
+        if (!currentBlock) {
+            try {
+                currentBlock = Number(await this.myWeb3.eth.getBlockNumber())
+            } catch (error) {
+                currentBlock = 0
+            }
+        }
+
+        let pair = getCreate2Address(
+            V2FACTORY,
+            keccak256(['bytes'], [pack(['address', 'address'], [token0, token1])]),
+            INIT_CODE_HASH
+        )
+
+        let buyTax = 0;
+
+        let batchSize = 1000;
+        let traceUpper = 10000;
+
+        let contract = new this.myWeb3.eth.Contract(univ2Pool_abi, pair);
+
+        for (let blockNumber = currentBlock; blockNumber > currentBlock - traceUpper; blockNumber -= batchSize) {
+            let events = await contract.getPastEvents(
+                'Swap',
+                {
+                    fromBlock: blockNumber - batchSize,
+                    toBlock: blockNumber
+                }
+            )
+            if (events.length > 0) {
+                let event = events[0] as EventLog;
+
+                let trxHash = event.transactionHash;
+
+                let swapRes = (event as any).returnValues
+                let swap_to = swapRes.to;
+                let swap_amount = swapRes.amount0Out
+                let isZeroForOne = (swapRes.amount0Out - swapRes.amount0In) > 0n ? false : true
+                if (isZeroForOne) {
+                    swap_amount = swapRes.amount1Out
+                }
+
+                if (trxHash) {
+                    let receipt = await this.myWeb3.eth.getTransactionReceipt(trxHash);
+                    for (const log of receipt.logs) {
+                        if (log.topics![0] == TransferSignature) {
+                            let res = decodeEventLog({
+                                abi: [
+                                    {
+                                        "anonymous": false,
+                                        "inputs": [
+                                            {
+                                                "indexed": true,
+                                                "name": "src",
+                                                "type": "address"
+                                            },
+                                            {
+                                                "indexed": true,
+                                                "name": "dst",
+                                                "type": "address"
+                                            },
+                                            {
+                                                "indexed": false,
+                                                "name": "wad",
+                                                "type": "uint256"
+                                            }
+                                        ],
+                                        "name": "Transfer",
+                                        "type": "event"
+                                    }
+                                ],
+                                data: (log as any).data,
+                                topics: (log as any).topics,
+                                strict: false
+                            })
+                            let transfer_from = res.args.src!;
+                            let transfer_to = res.args.dst;
+                            let transfer_value = res.args.wad!;
+                            if (transfer_from == pair && transfer_to == swap_to) {
+                                if (transfer_value == swap_amount) {
+                                    buyTax = 0;
+                                    this.tokenTaxMap.set(tokenAddress, buyTax);
+                                    return buyTax
+                                } else {
+                                    buyTax = Number(BigInt(String(swap_amount)) - transfer_value) / Number(swap_amount);
+                                    let buy_tax = Math.ceil(this.taxFactor * buyTax)
+                                    this.tokenTaxMap.set(tokenAddress, buy_tax);
+                                    return buy_tax;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return buyTax
     }
 
 
@@ -98,8 +218,10 @@ export class Web3Utils {
                 const txReceipt = await this.myWeb3.eth.getTransactionReceipt(TransferLogs[i].transactionHash);
                 if (txReceipt.logs.length == 1) {
                     buyflag = true;
+                    // console.log(txReceipt);
                     break;
                 }
+
                 let log_addresses = [];
                 for (let log of txReceipt.logs) {
                     if (log.topics != undefined && log.topics[0] == v2SwapHash) {
@@ -154,6 +276,7 @@ export class Web3Utils {
                                 } else {
                                     if (swap_to == transfer_to) {
                                         buyTax = Number(BigInt(String(swapinfo.amount1Out)) - transfer_value) / Number(swapinfo.amount1Out);
+
                                         buyflag = true;
                                         break;
                                     }
@@ -168,9 +291,12 @@ export class Web3Utils {
             if (buyflag) break;
         }
 
+        if (buyTax == 0) {
+            let taxByV2Pool = await this.calculateBuyTax_by_V2Pool(tokenAddress, currentBlock);
+            return taxByV2Pool;
+        }
         let buy_tax = Math.ceil(this.taxFactor * buyTax)
         this.tokenTaxMap.set(tokenAddress, buy_tax);
-
         return buy_tax;
     }
 

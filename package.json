@@ -13,6 +13,7 @@
     "typescript": "^5.3.2"
   },
   "dependencies": {
+    "@uniswap/v2-sdk": "^4.3.0",
     "axios": "^1.6.2",
     "lru-cache": "^10.1.0",
     "sqlite3": "^5.1.6",

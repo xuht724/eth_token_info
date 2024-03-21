@@ -336,6 +336,18 @@ export class SqliteHelper {
         }
     }
 
+    public async getTokenWithZeroBuyTaxRate(): Promise<string[]> {
+        const query = "SELECT address FROM Token WHERE buyTax = 0";
+        try {
+            const rows = await this.runQuery(query, []);
+
+            const addresses: string[] = rows.map((row: any) => row.address);
+
+            return addresses;
+        } catch (error) {
+            throw error;
+        }
+    }
 
     public async batchUpdateTokenTaxRate(
         dataMap: Map<string, any>
