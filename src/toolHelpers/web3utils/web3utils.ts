@@ -175,7 +175,7 @@ export class Web3Utils {
                 toBlock: blockNumber,
             }
             )
-            console.log('TrxLogs Length', TransferLogs.length)
+            // console.log('TrxLogs Length', TransferLogs.length)
 
             for (let i = 0; i < TransferLogs.length; i++) {
                 let log = decodeEventLog({
@@ -219,7 +219,7 @@ export class Web3Utils {
 
                 const txReceipt = await this.myWeb3.eth.getTransactionReceipt(TransferLogs[i].transactionHash);
                 if (txReceipt.logs.length == 1) {
-                    console.log('true');
+                    // console.log('true');
                     buyflag = true;
                     // console.log(txReceipt);
                     break;
@@ -227,7 +227,7 @@ export class Web3Utils {
 
                 let log_addresses = [];
 
-                console.log(txReceipt);
+                // console.log(txReceipt);
 
                 for (let log of txReceipt.logs) {
                     if (log.topics != undefined && log.topics[0] == v2SwapHash) {
@@ -299,6 +299,9 @@ export class Web3Utils {
 
         if (buyTax == 0) {
             let taxByV2Pool = await this.calculateBuyTax_by_V2Pool(tokenAddress, currentBlock);
+            if(taxByV2Pool < 0){
+                taxByV2Pool = 0;
+            }
             return taxByV2Pool;
         }
         let buy_tax = Math.ceil(this.taxFactor * buyTax)

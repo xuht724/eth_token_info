@@ -42,6 +42,58 @@ export class SqliteHelper {
         `);
     }
 
+    public async checkTokenExists(address: string): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            this.db.get(
+                'SELECT address FROM Token WHERE address = ?',
+                [address],
+                (err, row) => {
+                    if (err) {
+                        this.logger.error('Error checking address in Token table:', err);
+                        resolve(false); // 在出错时直接返回 null
+                    } else {
+                        resolve(!!row); // 如果 row 为 null，则为 false；否则为 true
+                    }
+                }
+            );
+        });
+    }
+    
+    public async checkV2EdgeExits(address: string): Promise<boolean>{
+        return new Promise<boolean>((resolve, reject) => {
+            this.db.get(
+                'SELECT address FROM V2Edge WHERE address = ?',
+                [address],
+                (err, row) => {
+                    if (err) {
+                        this.logger.error('Error checking address in V2Edge table:', err);
+                        resolve(false); // 在出错时直接返回 null
+                    } else {
+                        resolve(!!row); // !!row will be true if row is not null or undefined
+                    }
+                }
+            );
+        });
+    }
+
+        
+    public async checkV3EdgeExits(address: string): Promise<boolean>{
+        return new Promise<boolean>((resolve, reject) => {
+            this.db.get(
+                'SELECT address FROM V3Edge WHERE address = ?',
+                [address],
+                (err, row) => {
+                    if (err) {
+                        this.logger.error('Error checking address in V3Edge table:', err);
+                        resolve(false); // 在出错时直接返回 null
+                    } else {
+                        resolve(!!row); // !!row will be true if row is not null or undefined
+                    }
+                }
+            );
+        });
+    }
+
     private createV2EdgeTable(): void {
         this.db.run(`
             CREATE TABLE IF NOT EXISTS V2Edge (

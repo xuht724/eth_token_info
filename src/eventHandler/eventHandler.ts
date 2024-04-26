@@ -40,30 +40,36 @@ export class EventHandler {
         web3utils: Web3Utils,
         sqliteHelper: SqliteHelper
     ) {
-        const token0Info = web3utils.getTokenInfo(
-            event.returnValues.token0 as string
-        );
-        const token1Info = web3utils.getTokenInfo(
-            event.returnValues.token1 as string
-        );
+        let t0Addr = event.returnValues.token0 as string;
+        let t1Addr = event.returnValues.token1 as string;
 
-        // Wait for both promises to resolve
-        try {
-            const [token0, token1] = await Promise.all([
-                token0Info,
-                token1Info,
-            ]);
+        let v0Flag = await sqliteHelper.checkTokenExists(t0Addr.toLowerCase());
+        let v1Flag = await sqliteHelper.checkTokenExists(t1Addr.toLowerCase());
 
-            if (token0 && token1) {
+
+        
+        if(!v0Flag){
+            const token0 = await web3utils.getTokenInfo(
+                event.returnValues.token0 as string
+            );
+            if(token0){
                 await sqliteHelper.addToken(token0);
-                await sqliteHelper.addToken(token1);
-
-                let edge = this.decodeV2PoolCreatedEvent(protocol, event);
-                await sqliteHelper.addV2Edge(edge);
             }
-        } catch (error) {
-            console.log("Get Token Error");
         }
+        if(!v1Flag){
+            const token1 = await web3utils.getTokenInfo(
+                event.returnValues.token1 as string
+            );
+            if(token1){
+                await sqliteHelper.addToken(token1);
+            }
+        }
+        let edge = this.decodeV2PoolCreatedEvent(protocol, event);
+        let edgeFlag = await sqliteHelper.checkV2EdgeExits(edge.pairAddress.toLowerCase());
+        if(!edgeFlag){
+            await sqliteHelper.addV2Edge(edge);
+        }
+
     }
 
     static async handleV3CreatedEvent(
@@ -72,28 +78,33 @@ export class EventHandler {
         web3utils: Web3Utils,
         sqliteHelper: SqliteHelper
     ) {
-        const token0Info = web3utils.getTokenInfo(
-            event.returnValues.token0 as string
-        );
-        const token1Info = web3utils.getTokenInfo(
-            event.returnValues.token1 as string
-        );
 
-        //Wait for both promises to resolve
-        try {
-            const [token0, token1] = await Promise.all([
-                token0Info,
-                token1Info,
-            ]);
-            if (token0 && token1) {
+        let t0Addr = event.returnValues.token0 as string;
+        let t1Addr = event.returnValues.token1 as string;
+
+        let v0Flag = await sqliteHelper.checkTokenExists(t0Addr.toLowerCase());
+        let v1Flag = await sqliteHelper.checkTokenExists(t1Addr.toLowerCase());
+
+        if(!v0Flag){
+            const token0 = await web3utils.getTokenInfo(
+                event.returnValues.token0 as string
+            );
+            if(token0){
                 await sqliteHelper.addToken(token0);
-                await sqliteHelper.addToken(token1);
-
-                let edge = this.decodeV3PoolCreatedEvent(protocol, event);
-                await sqliteHelper.addV3Edge(edge);
             }
-        } catch (error) {
-            console.log("Get Token Error");
+        }
+        if(!v1Flag){
+            const token1 = await web3utils.getTokenInfo(
+                event.returnValues.token1 as string
+            );
+            if(token1){
+                await sqliteHelper.addToken(token1);
+            }
+        }
+        let edge = this.decodeV3PoolCreatedEvent(protocol, event);
+        let edgeFlag = await sqliteHelper.checkV3EdgeExits(edge.pairAddress.toLowerCase());
+        if(!edgeFlag){
+            await sqliteHelper.addV3Edge(edge);
         }
     }
 
